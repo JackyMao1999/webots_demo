@@ -1,0 +1,219 @@
+#VRML_SIM R2020b utf8
+WorldInfo {
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation 0.3175435805751001 -0.7069135559074232 -0.6320121034520363 3.911961018785574
+  position -0.3250536688145259 2.1331017678002575 4.519244483007864
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 10 10
+}
+Robot {
+  translation -0.71689 0.0951408 4.25761
+  rotation -0.029162944431255243 -0.9995661132659951 -0.004136167599547296 0.7874378775500035
+  children [
+    InertialUnit {
+    }
+    GPS {
+    }
+    SickLms291 {
+      translation 1.14102e-06 0.15 -0.21
+      rotation -0.0026073289594429508 0.9999966009120719 -3.4468886243836845e-09 -5.307179586466759e-06
+      noise 0.1
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 25010.76390719647
+        axis 0 1 0
+        anchor 0 -0.09 -0.23
+      }
+      endPoint Solid {
+        translation 0 -0.09 -0.23
+        rotation 0 1 0 3.6863846217153395
+        children [
+          Shape {
+            appearance Appearance {
+            }
+            geometry Sphere {
+              radius 0.02
+            }
+          }
+        ]
+        name "solid(3)"
+        boundingObject Sphere {
+          radius 0.02
+        }
+        physics Physics {
+        }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position -24882.908662033893
+        axis 0 1 0
+        anchor 0 -0.09 0.23
+      }
+      endPoint Solid {
+        translation 0 -0.09 0.23
+        rotation 0 -1 0 1.494845602730603
+        children [
+          Shape {
+            appearance Appearance {
+            }
+            geometry Sphere {
+              radius 0.02
+            }
+          }
+        ]
+        name "solid(2)"
+        boundingObject Sphere {
+          radius 0.02
+        }
+        physics Physics {
+        }
+      }
+    }
+    DEF left_wheel HingeJoint {
+      jointParameters HingeJointParameters {
+        position 48.787315680106076
+        axis 2 0 0
+        anchor 0.31 0 0
+      }
+      device [
+        RotationalMotor {
+          name "left_motor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.3100016733105416 5.814595040286208e-05 -0.0006259418623090811
+        rotation -0.5419341825632956 -0.5419361825639694 0.6423492163904652 -1.9996353071795863
+        children [
+          Shape {
+            appearance Appearance {
+              material Material {
+              }
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.12
+            }
+          }
+        ]
+        boundingObject Cylinder {
+          height 0.08
+          radius 0.12
+        }
+        physics Physics {
+        }
+      }
+    }
+    DEF right_wheel HingeJoint {
+      jointParameters HingeJointParameters {
+        position 9.64103281132311
+        axis 2 0 0
+        anchor -0.31 0 0
+      }
+      device [
+        RotationalMotor {
+          name "right_motor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.31 0 0
+        rotation 0.10729300732135319 0.10729400732142143 -0.9884210674468906 1.58245
+        children [
+          Shape {
+            appearance Appearance {
+              material Material {
+              }
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.12
+            }
+          }
+        ]
+        name "solid(1)"
+        boundingObject Cylinder {
+          height 0.08
+          radius 0.12
+        }
+        physics Physics {
+        }
+      }
+    }
+    DEF body Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.913725 0.72549 0.431373
+        }
+      }
+      geometry Box {
+        size 0.5 0.15 0.5
+      }
+    }
+  ]
+  boundingObject USE body
+  physics Physics {
+  }
+  controller "ros"
+  controllerArgs [
+    "--name=robot"
+  ]
+}
+OfficeChair {
+  hidden position_0_0 -0.5554730620236675
+  hidden translation_1 0 -2.220446049250313e-16 0
+  hidden rotation_1 0 -1 0 0.5554730620236672
+  translation -3.175319230218504 -0.00012887645112960588 -3.4583014040816953
+  rotation -0.0029529626051865293 0.9999942233007205 -0.0016832638062223083 0.036981094308313776
+}
+Pedestrian {
+  translation -2.72 1.27 3.4
+}
+Wall {
+  translation -5 0.5 -5
+  rotation -0.5773509358554485 0.5773489358556708 0.5773509358554485 -2.094395307179586
+  size 1 10 0.2
+}
+Wall {
+  translation 5 0.5 -5
+  rotation -0.5773509358554485 0.5773489358556708 0.5773509358554485 -2.094395307179586
+  name "wall(1)"
+  size 1 10 0.2
+}
+Wall {
+  translation -5 0.5 -5
+  rotation -7.8088e-07 -1.36929e-06 1 -1.5707953071795862
+  name "wall(2)"
+  size 1 10 0.2
+}
+Wall {
+  translation -5 0.5 5
+  rotation -7.8088e-07 -1.36929e-06 1 -1.5707953071795862
+  name "wall(3)"
+  size 1 10 0.2
+}
+Wall {
+  translation -5 0.5 0.47
+  rotation -7.8088e-07 -1.36929e-06 1 -1.5707953071795862
+  name "wall(4)"
+  size 1 5 0.2
+}
+Wall {
+  translation -0.76 0.5 2.56
+  rotation 0.5773502691890485 -0.5773512691895147 0.5773492691885823 -2.094395307179586
+  name "wall(5)"
+  size 1 2 0.2
+}
+Wall {
+  translation -0.76 0.5 0.38
+  rotation 0.5773502691890485 -0.5773512691895147 0.5773492691885823 -2.094395307179586
+  name "wall(6)"
+  size 1 2 0.2
+}

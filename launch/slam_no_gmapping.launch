@@ -1,0 +1,15 @@
+<launch>
+    <!-- 打开webots -->
+    <include file="$(find webots_demo)/launch/webots.launch" />
+    <arg name="model" />
+    <arg name="gui" default="false" />
+    <!-- 载入机器人模型 -->
+    <param name="robot_description" textfile="$(find webots_demo)/urdf/demo.urdf" />
+    <param name="use_gui" value="$(arg gui)" />
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node name="robot_broadcaster" pkg="webots_demo" type="robot_broadcaster" />
+    <!-- 打开rviz -->
+    <node name="rviz" pkg="rviz" type="rviz"  args="-d $(find webots_demo)/rviz/demo.rviz"/>
+</launch>
+<!-- rosrun gmapping slam_gmapping scan:=/volcano/Sick_LMS_291/laser_scan/layer0 _xmax:=30 _xmin:=-30 _ymax:=30 _ymin:=-30 _delta:=0.2' -->

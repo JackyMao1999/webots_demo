@@ -1,0 +1,15 @@
+#“obstacle_range”参数决定了引入障碍物到代价地图的传感器读数的最大范围。我们把它设定为2.5米,这意味着机器人只会更新以其底盘为中心半径2.5米内的障碍信息.
+obstacle_range: 2.5
+#“raytrace_range”参数确定的空白区域内光线追踪的范围。 设置为3.0米意味着机器人将试图根据传感器读数清除其前面3.0米远的空间。
+raytrace_range: 3.0
+#指定的footprint时,机器人的中心被认为是在(0.0,0.0),顺时针和逆时针规范都支持。 
+footprint: [[0.25, 0.25], [0.25, -0.25],[-0.25, -0.25],[-0.25, 0.25]]
+#robot_radius: ir_of_robot
+#代价地图膨胀半径
+inflation_radius: 0.55
+#“observation_sources”参数定义了一系列传递空间信息给代价地图的传感器
+observation_sources: laser_scan_sensor #point_cloud_sensor
+
+laser_scan_sensor: {sensor_frame: base_laser, data_type: LaserScan, topic: robot/Sick_LMS_291/laser_scan/layer0, marking: true, clearing: true}
+
+#point_cloud_sensor: {sensor_frame: frame_name, data_type: PointCloud, topic: topic_name, marking: true, clearing: true}

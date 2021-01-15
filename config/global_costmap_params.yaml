@@ -1,0 +1,10 @@
+global_costmap:
+#“global_frame”参数定义了代价地图运行所在的坐标帧。
+  global_frame: map
+#“robot_base_frame”参数定义了代价地图参考的的机器底盘的坐标帧。  
+  robot_base_frame: base_link
+#“update_frequency”参数决定了代价地图更新的频率。
+  update_frequency: 5.0
+  publish_frequency: 5.0
+#“static_map”参数决定代价地图是否根据map_server提供的地图初始化。如果你不使用现有的地图，设为false。
+  static_map: true
