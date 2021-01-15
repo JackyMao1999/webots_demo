@@ -1,4 +1,22 @@
 # webots_demo
+
+## 操作方法
+1. 命令行进入`catkin_ws/src`
+``` shell
+$ cd catkin_ws/src
+$ git clone https://github.com/JackyMao1999/webots_demo.git
+```
+2. 编译
+``` shell
+$ catkin_make
+```
+3. 运行
+``` shell
+$ roslaunch webots_demo slam_no_gmapping.launch
+$ roslaunch webots_demo move_base.launch
+$ rosrun  webots_demo demo_2dnav_move
+```
+
 注意：
 
 - 再学习本系列教程时，应该已经安装过ROS了并且需要有一些ROS的基本知识
