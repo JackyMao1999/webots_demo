@@ -16,7 +16,8 @@ $ roslaunch webots_demo slam_no_gmapping.launch
 $ roslaunch webots_demo move_base.launch
 $ rosrun  webots_demo demo_2dnav_move
 ```
-
+## 效果
+![1](2-2.gif)
 注意：
 
 - 再学习本系列教程时，应该已经安装过ROS了并且需要有一些ROS的基本知识
