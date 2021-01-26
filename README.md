@@ -43,6 +43,8 @@ $ rosrun  webots_demo demo_2dnav_move
 
 [ROS联合webots实战案例(五)导航功能包入门2](https://blog.csdn.net/xiaokai1999/article/details/112596640)
 
+2021.01.26更新ROS1结合Webots实现Cartographer建图与导航
+![6](6.png)
 
 结语
 本文也是基于笔者的学习和使用经验总结的，主观性较强，如果有哪些不对的地方或者不明白的地方，欢迎评论区留言交流~
