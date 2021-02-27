@@ -1,6 +1,8 @@
 <launch>
     <!-- 打开webots -->
     <include file="$(find webots_demo)/launch/webots.launch" />
+    <!-- <node name="velocity_keyboard_v2" pkg="webots_demo" type="velocity_keyboard_v2"/> -->
+    <node name="demo_2dnav_move" pkg="webots_demo" type="demo_2dnav_move"/>
     <arg name="model" />
     <arg name="gui" default="false" />
     <!-- 载入机器人模型 -->
@@ -49,6 +51,21 @@
     <param name="lasamplerange" value="0.005" />
     <param name="lasamplestep" value="0.005" />
     <remap from="scan" to="/robot/Sick_LMS_291/laser_scan/layer0" />
+  </node>
+
+  <!-- move_base 导航 -->>
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find webots_demo)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find webots_demo)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find webots_demo)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find webots_demo)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find webots_demo)/config/base_local_planner_params.yaml" command="load" />
+    <remap from="cmd_vel" to="cmd_vel"/>
+    <remap from="odom" to="odom"/>
+    <remap from="scan" to="robot/Sick_LMS_291/laser_scan/layer0"/>
+
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
   </node>
 </launch>
 <!-- rosrun gmapping slam_gmapping scan:=/volcano/Sick_LMS_291/laser_scan/layer0 _xmax:=30 _xmin:=-30 _ymax:=30 _ymin:=-30 _delta:=0.2' -->

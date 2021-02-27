@@ -1,0 +1,260 @@
+#VRML_SIM R2021a utf8
+WorldInfo {
+  coordinateSystem "NUE"
+}
+Viewpoint {
+  orientation 0.9998825363495228 0.011311963651497378 0.01034180746253718 4.801818306672332
+  position 3.0962999034882848 46.88314958043443 3.214638168315593
+}
+TexturedBackgroundLight {
+}
+TexturedBackground {
+}
+RectangleArena {
+  floorSize 13 15
+  floorAppearance Parquetry {
+    type "light strip"
+  }
+}
+DEF volcano_v3 Robot {
+  translation 0.0010734901576918492 0.11726783170770562 -0.0012735083230857383
+  rotation -0.0033972447796280256 -0.9999940943725414 0.000519565153082622 1.8938007092941935
+  children [
+    SickLms291 {
+      translation 0 0.2 0
+      noise 0.005
+    }
+    Gyro {
+    }
+    Accelerometer {
+    }
+    InertialUnit {
+      rotation -0.9999999999932663 2.5166899999830535e-07 3.6612099999753463e-06 1.5708
+    }
+    GPS {
+      rotation 0 1 0 -5.307179586466759e-06
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 89939.04038515918
+        anchor 0 -0.1 0.23
+      }
+      endPoint Solid {
+        translation -4.517070000000316e-05 -0.10044193509642352 0.22734888237519552
+        rotation -0.5729337226980135 0.26209113703039344 0.7765662787460651 3.519412790513128
+        children [
+          Shape {
+            appearance Appearance {
+              material Material {
+              }
+            }
+            geometry Sphere {
+              radius 0.02
+            }
+          }
+        ]
+        name "solid(3)"
+        boundingObject Sphere {
+          radius 0.02
+        }
+        physics Physics {
+          mass 1
+        }
+        linearVelocity -1.9561265179355303e-06 -1.9478523154814857e-06 -7.25108777190009e-07
+        angularVelocity -0.00016370617688214734 1.9930935228218113e-06 0.0004889929239720866
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 1067.7798954440066
+        anchor 0 -0.1 -0.23
+      }
+      endPoint Solid {
+        translation 0.00013356399999999504 -0.09926565202689487 -0.23023815342616963
+        rotation 0.19853358840797877 0.9511187141022123 0.23655360060334268 1.7912507204526154
+        children [
+          Shape {
+            appearance Appearance {
+              material Material {
+              }
+            }
+            geometry Sphere {
+              radius 0.02
+            }
+          }
+        ]
+        name "solid(2)"
+        boundingObject Sphere {
+          radius 0.02
+        }
+        physics Physics {
+          mass 1
+        }
+        linearVelocity -2.3262019139951302e-06 -1.9713870036640538e-06 -7.14464208442234e-07
+        angularVelocity -5.099139935773198e-05 2.2901095149530354e-07 0.00015225152376493155
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 11410.952294516426
+        axis -1 0 0
+        anchor -0.31 0 0
+      }
+      device [
+        RotationalMotor {
+          name "right_motor"
+        }
+      ]
+      endPoint Solid {
+        translation -0.3100002816703391 0.0025314658836759927 -0.0005138594480349941
+        rotation -0.3862347465864912 0.3802662742595451 -0.840369133887028 4.537132908196541
+        children [
+          Shape {
+            appearance Appearance {
+              material Material {
+              }
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.12
+            }
+          }
+        ]
+        name "solid(1)"
+        boundingObject Cylinder {
+          height 0.08
+          radius 0.12
+        }
+        physics Physics {
+          mass 1
+        }
+        linearVelocity -2.2485995394916362e-06 -2.6343208081696374e-06 -7.55247821859316e-07
+        angularVelocity -2.709493919190418e-07 -5.63084641718407e-07 7.11231712974783e-07
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 11443.238382188787
+        axis -1 0 0
+        anchor 0.31 0 0
+      }
+      device [
+        RotationalMotor {
+          name "left_motor"
+        }
+      ]
+      endPoint Solid {
+        translation 0.30999976179036004 -0.0006153084368938345 -0.00022061146878942078
+        rotation -0.6961194263597269 -0.6966248788041056 -0.17358433822142436 2.7960980578419816
+        children [
+          Shape {
+            appearance Appearance {
+              material Material {
+              }
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.12
+            }
+          }
+        ]
+        boundingObject Cylinder {
+          height 0.08
+          radius 0.12
+        }
+        physics Physics {
+          mass 1
+        }
+        linearVelocity -2.6826339739933742e-06 -2.6186318164041995e-06 -9.006992459561484e-07
+        angularVelocity -1.6387263943012885e-06 -5.416663477820613e-07 4.798531491064035e-06
+      }
+    }
+    DEF body Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.913725 0.72549 0.431373
+        }
+      }
+      geometry Box {
+        size 0.5 0.15 0.5
+      }
+    }
+  ]
+  boundingObject USE body
+  physics Physics {
+    density 100
+  }
+  controller "ros"
+  controllerArgs [
+    "--use-sim-time"
+    "--clock"
+    "--name=volcano"
+  ]
+}
+Group {
+  children [
+    Bed {
+      translation -3.23 0 -5.76
+    }
+    Table {
+      translation -5.24 0 0
+    }
+    Wall {
+      translation 6.39 0 -4.50358e-05
+      rotation 0 1 0 1.5708
+      name "wall(1)"
+      size 15 2.4 0.2
+    }
+    Wall {
+      translation 0 0 -7.5
+      name "wall(2)"
+      size 13 2.4 0.2
+    }
+    Wall {
+      translation 0 0 7.5
+      name "wall(3)"
+      size 13 2.4 0.2
+    }
+    Wall {
+      translation -4.25 0 -2.72
+      name "wall(4)"
+      size 4.5 2.4 0.2
+    }
+    Wall {
+      translation -4.25 0 2.57
+      name "wall(6)"
+      size 4.5 2.4 0.2
+    }
+    Wall {
+      translation 3.55 0 2.57
+      name "wall(8)"
+      size 5.5 2.4 0.2
+    }
+    Wall {
+      translation 3.55 0 -4.25
+      name "wall(9)"
+      size 5.5 2.4 0.2
+    }
+    Wall {
+      translation -0.63 0 -5.07
+      rotation 0 -1 0 -1.5708053071795867
+      name "wall(5)"
+      size 4.9 2.4 0.2
+    }
+    Wall {
+      translation -0.62991 0 4.95
+      rotation 0 -1 0 -1.5708053071795867
+      name "wall(7)"
+      size 4.9 2.4 0.2
+    }
+    Wall {
+      translation -6.4 0 0
+      rotation 0 1 0 1.5708
+      size 15 2.4 0.2
+    }
+    Door {
+      translation 6.4 0 0
+      rotation 0 1 0 -1.5707953071795862
+    }
+  ]
+}
