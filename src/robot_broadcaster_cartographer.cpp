@@ -17,8 +17,8 @@ Description:Webots Demo 机器人在cartographer建图算法下专用启动程�
 #include <webots_ros/set_float.h>
 #include <webots_ros/set_int.h>
 #include <webots_ros/Int32Stamped.h>
- 
 using namespace std;
+
 #define TIME_STEP 32                        // 时钟
 #define NMOTORS 2                           // 电机数量
 #define MAX_SPEED 2.0                       // 电机最大速度
@@ -76,15 +76,20 @@ void quit(int sig) {
 void broadcastTransform(){
     static tf::TransformBroadcaster br;
     tf::Transform transform;
-    transform.setOrigin(tf::Vector3(GPSvalues[0]-GPSvalues[2],GPSvalues[1]-GPSvalues[3],0));// 设置原点
-    tf::Quaternion q(Inertialvalues[0],Inertialvalues[2],Inertialvalues[1],-Inertialvalues[3]);
+    transform.setOrigin(tf::Vector3(GPSvalues[0]-GPSvalues[2],GPSvalues[1]-GPSvalues[3],0));// 设置原点，和gmapping算法不太一样，这边计算出一个相对于第一次记录的GPS数据的位置
+    tf::Quaternion q(Inertialvalues[0],Inertialvalues[2],Inertialvalues[1],-Inertialvalues[3]);// 设置四元数，机器人位姿
     transform.setRotation(q);
-    br.sendTransform(tf::StampedTransform(transform,ros::Time::now(),"odom","base_link"));
+    br.sendTransform(tf::StampedTransform(transform,ros::Time::now(),"odom","base_link"));// 发布base_link相对于odom的坐标系关系
     transform.setIdentity();
-    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link", "robot/Sick_LMS_291"));
-
+    br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_link", "robot/Sick_LMS_291"));// 发布激光雷达相对于base_link的坐标系关系
 }
 
+/*******************************************************
+* Function name ：send_odom_data
+* Description   ：由于Cartographer参数使用odom数据，通过这个函数发布odom数据
+* Parameter     ：无
+* Return        ：无
+**********************************************************/
 void send_odom_data()
 {
     nav_msgs::Odometry odom;
@@ -106,13 +111,18 @@ void send_odom_data()
     odompub.publish(odom);
 }
 
-
-void gpsCallback(const geometry_msgs::PointStamped::ConstPtr &value)
-{
+/*******************************************************
+* Function name ：gpsCallback
+* Description   ：gps数据回调函数
+* Parameter     ：
+        @value   返回的值
+* Return        ：无
+**********************************************************/
+void gpsCallback(const geometry_msgs::PointStamped::ConstPtr &value){
     GPSvalues[0] = value->point.x;
     GPSvalues[1] = value->point.z;
-    if (gps_flag)
-    {
+    // 记录一次机器人初始点位置，所以这边解释了为什么要设置长度为4的GPSvalues数组变量
+    if (gps_flag){
         GPSvalues[2] = value->point.x;
         GPSvalues[3] = value->point.z;
         gps_flag=0;
@@ -120,17 +130,28 @@ void gpsCallback(const geometry_msgs::PointStamped::ConstPtr &value)
     broadcastTransform();  
 }
 
-void inertial_unitCallback(const sensor_msgs::Imu::ConstPtr &values)
-{
+/*******************************************************
+* Function name ：inertial_unitCallback
+* Description   ：IMU数据回调函数
+* Parameter     ：
+        @value   返回的值
+* Return        ：无
+**********************************************************/
+void inertial_unitCallback(const sensor_msgs::Imu::ConstPtr &values){
     Inertialvalues[0] = values->orientation.x;
     Inertialvalues[1] = values->orientation.y;
     Inertialvalues[2] = values->orientation.z;
     Inertialvalues[3] = values->orientation.w;
-    
     broadcastTransform();
 }
-void velCallback(const nav_msgs::Odometry::ConstPtr &value)
-{
+/*******************************************************
+* Function name ：velCallback
+* Description   ：接收机器人的角速度和线速度值，由velocity_keyboard_v2发布
+* Parameter     ：
+        @value   返回的值
+* Return        ：无
+**********************************************************/
+void velCallback(const nav_msgs::Odometry::ConstPtr &value){
     liner_speed = value->twist.twist.linear.x;
     angular_speed = value->twist.twist.angular.z;
     send_odom_data();
@@ -164,9 +185,9 @@ int main(int argc, char **argv) {
         cout << "Choose the # of the controller you want to use:\n";
         cin >> wantedController;
         if (1 <= wantedController && wantedController <= controllerCount)
-        controllerName = controllerList[wantedController - 1];
+            controllerName = controllerList[wantedController - 1];
         else {
-        ROS_ERROR("Invalid number for controller choice.");
+            ROS_ERROR("Invalid number for controller choice.");
         return 1;
         }
     }
@@ -177,7 +198,7 @@ int main(int argc, char **argv) {
     // 使能lidar
     ros::ServiceClient lidar_Client;          
     webots_ros::set_int lidar_Srv;            
-    lidar_Client = n->serviceClient<webots_ros::set_int>("/robot/Sick_LMS_291/enable");
+    lidar_Client = n->serviceClient<webots_ros::set_int>(string(ROBOT_NAME)+string("Sick_LMS_291/enable"));
     lidar_Srv.request.value = TIME_STEP;
     if (lidar_Client.call(lidar_Srv) && lidar_Srv.response.success) {
         ROS_INFO("gps enabled.");
@@ -191,19 +212,17 @@ int main(int argc, char **argv) {
     ros::ServiceClient gps_Client;          
     webots_ros::set_int gps_Srv;            
     ros::Subscriber gps_sub;
-    gps_Client = n->serviceClient<webots_ros::set_int>("/robot/gps/enable");
+    gps_Client = n->serviceClient<webots_ros::set_int>(string(ROBOT_NAME)+string("gps/enable"));
     gps_Srv.request.value = TIME_STEP;
     if (gps_Client.call(gps_Srv) && gps_Srv.response.success) {
         ROS_INFO("gps enabled.");
-        gps_sub = n->subscribe("/robot/gps/values", 1, gpsCallback);
+        gps_sub = n->subscribe(string(ROBOT_NAME)+string("gps/values"), 1, gpsCallback);
         ROS_INFO("Topic for gps initialized.");
-        while (gps_sub.getNumPublishers() == 0) {
-        }
+        while (gps_sub.getNumPublishers() == 0) {}
         ROS_INFO("Topic for gps connected.");
     } else {
         if (!gps_Srv.response.success)
-        ROS_ERROR("Sampling period is not valid.");
-        ROS_ERROR("Failed to enable gps.");
+            ROS_ERROR("Failed to enable gps.");
         return 1;
     }
     
@@ -211,19 +230,17 @@ int main(int argc, char **argv) {
     ros::ServiceClient inertial_unit_Client;          
     webots_ros::set_int inertial_unit_Srv;            
     ros::Subscriber inertial_unit_sub;
-    inertial_unit_Client = n->serviceClient<webots_ros::set_int>("/robot/inertial_unit/enable");
+    inertial_unit_Client = n->serviceClient<webots_ros::set_int>(string(ROBOT_NAME)+string("inertial_unit/enable"));
     inertial_unit_Srv.request.value = TIME_STEP;
     if (inertial_unit_Client.call(inertial_unit_Srv) && inertial_unit_Srv.response.success) {
         ROS_INFO("inertial_unit enabled.");
-        inertial_unit_sub = n->subscribe("robot/inertial_unit/quaternion", 1, inertial_unitCallback);
+        inertial_unit_sub = n->subscribe(string(ROBOT_NAME)+string("inertial_unit/quaternion"), 1, inertial_unitCallback);
         ROS_INFO("Topic for inertial_unit initialized.");
-        while (inertial_unit_sub.getNumPublishers() == 0) {
-        }
+        while (inertial_unit_sub.getNumPublishers() == 0) {}
         ROS_INFO("Topic for inertial_unit connected.");
     } else {
         if (!inertial_unit_Srv.response.success)
-        ROS_ERROR("Sampling period is not valid.");
-        ROS_ERROR("Failed to enable inertial_unit.");
+            ROS_ERROR("Failed to enable inertial_unit.");
         return 1;
     }
 
@@ -234,8 +251,8 @@ int main(int argc, char **argv) {
     // main loop
     while (ros::ok()) {
         if (!timeStepClient.call(timeStepSrv) || !timeStepSrv.response.success) {
-        ROS_ERROR("Failed to call service time_step for next step.");
-        break;
+            ROS_ERROR("Failed to call service time_step for next step.");
+            break;
         }
         ros::spinOnce();
     }
@@ -244,6 +261,5 @@ int main(int argc, char **argv) {
     timeStepClient.call(timeStepSrv);
     ros::shutdown(); 
     return 0;
-
 }
 
