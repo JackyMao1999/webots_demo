@@ -1,0 +1,40 @@
+
+#---standard pioneer footprint---
+#---(in meters)---
+#robot_radius: 0.075
+# 机器人的轮廓[x0,y0];[x1,y1];[x2,y2];[x3,y3]
+footprint: [[0.25, 0.25], [0.25, -0.25],[-0.25, -0.25],[-0.25, 0.25]]
+# 机器人轮廓边缘
+footprint_padding: 0.01
+# tf转换时最大容忍的时间
+transform_tolerance: 3.0
+# 地图类型
+map_type: costmap
+
+always_send_full_costmap: true  #true
+
+# 障碍地图层 需要开启
+obstacle_layer:
+ enabled: True
+ obstacle_range: 2.5
+ raytrace_range: 3.5
+ # false->each pixel has one of 2 states: lethal obstacle or free
+ # true->each pixel has one of 3 states: lethal obstacle, free, or unknown.
+ track_unknown_space: true
+ combination_method: 1
+# 观察来源
+ observation_sources: laser_scan_sensor
+ # making->是否这个观察用来标记障碍物
+ # clearing->是否这个观察用来清除空闲空间
+ laser_scan_sensor: {data_type: LaserScan, topic: robot/Sick_LMS_291/laser_scan/layer0, marking: true, clearing: true}
+
+# 膨胀地图层
+inflation_layer:
+  enabled: true
+  cost_scaling_factor: 5.0
+  inflation_radius: 0.36
+
+# 静态地图层
+static_layer:
+  enabled:              true
+  map_topic:            "map"

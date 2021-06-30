@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!-- Copyright:Webots Demo -->
+<!-- Author: 锡城筱凯 -->
+<!-- Date:2021-06-30  -->
+<!-- Blog：https://blog.csdn.net/xiaokai1999 -->
+<!-- Description: 启动webots的launch文件 -->
+<launch>
+  <param name="/use_sim_time" value="true" />
+
+  <!-- 启动webots -->
+  <arg name="no_gui" default="false," doc="Start Webots with minimal GUI"/>
+  <include file="$(find webots_ros)/launch/webots.launch">
+    <arg name="mode" value="realtime"/>
+    <arg name="no_gui" value="$(arg no_gui)"/>
+    <arg name="world" value="$(find webots_demo)/worlds/webots_map.wbt"/>
+  </include>
+</launch>

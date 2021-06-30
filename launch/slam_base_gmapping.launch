@@ -1,0 +1,80 @@
+<!-- Copyright:Webots Demo -->
+<!-- Author: 锡城筱凯 -->
+<!-- Date:2021-06-30  -->
+<!-- Blog：https://blog.csdn.net/xiaokai1999 -->
+<!-- Description: 启动Webots以及Gmapping建图，采用base导航算法 -->
+<launch>
+    <!-- 打开webots -->
+    <include file="$(find webots_demo)/launch/webots.launch" />
+    
+    <!-- bringup -->
+    <node name="robot_broadcaster" pkg="webots_demo" type="robot_broadcaster_gmapping" />
+
+    <!-- 导航机器人控制程序 -->
+    <node name="demo_2dnav_move" pkg="webots_demo" type="demo_2dnav_move"/>
+    
+    <!-- 载入机器人模型(笔者的机器人模型没弄好) -->
+    <!-- <arg name="model" />
+    <arg name="gui" default="false" />
+    <param name="robot_description" textfile="$(find webots_demo)/urdf/demo.urdf" />
+    <param name="use_gui" value="$(arg gui)" />
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" /> -->
+    
+    <!-- 打开rviz -->
+    <node name="rviz" pkg="rviz" type="rviz"  args="-d $(find webots_demo)/rviz/robot_gmapping.rviz"/>
+    
+    <!-- Gmapping建图算法，接收传感器数据建立地图 -->
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping" output="screen" clear_params="true">
+    <param name="odom_frame" value="odom" />
+    <param name="base_frame" value="base_link" />
+    <param name="map_update_interval" value="0.75" />
+    <!-- Set maxUrange < actual maximum range of the Laser -->
+    <param name="maxRange" value="4.5" />
+    <param name="maxUrange" value="3.5" />
+    <param name="sigma" value="0.05" />
+    <param name="kernelSize" value="1" />
+    <param name="lstep" value="0.05" />
+    <param name="astep" value="0.05" />
+    <param name="iterations" value="5" />
+    <param name="lsigma" value="0.075" />
+    <param name="ogain" value="3.0" />
+    <param name="lskip" value="0" />
+    <param name="srr" value="0.01" />
+    <param name="srt" value="0.02" />
+    <param name="str" value="0.01" />
+    <param name="stt" value="0.02" />
+    <param name="linearUpdate" value="0.5" />
+    <param name="angularUpdate" value="0.157" />
+    <param name="temporalUpdate" value="-1.0" />
+    <param name="resampleThreshold" value="0.5" />
+    <param name="particles" value="50" />
+
+    <param name="xmin" value="-1.0" />
+    <param name="ymin" value="-1.0" />
+    <param name="xmax" value="1.0" />
+    <param name="ymax" value="1.0" />
+
+    <param name="delta" value="0.05" />
+    <param name="llsamplerange" value="0.01" />
+    <param name="llsamplestep" value="0.01" />
+    <param name="lasamplerange" value="0.005" />
+    <param name="lasamplestep" value="0.005" />
+    <remap from="scan" to="/robot/Sick_LMS_291/laser_scan/layer0" />
+  </node>
+
+  <!-- move_base 导航 -->>
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find webots_demo)/config/base/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find webots_demo)/config/base/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find webots_demo)/config/base/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find webots_demo)/config/base/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find webots_demo)/config/base/base_local_planner_params.yaml" command="load" />
+    <remap from="cmd_vel" to="cmd_vel"/>
+    <remap from="odom" to="odom"/>
+    <remap from="scan" to="robot/Sick_LMS_291/laser_scan/layer0"/>
+
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+  </node>
+</launch>

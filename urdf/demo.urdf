@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.5.1-0-g916b5db  Build Version: 1.5.7152.31018
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="tianbot_mini_description">
+
+  <!-- <link name="dummy">
+    </link>
+    <joint name="dummy_joint" type="fixed">
+      <parent link="dummy"/>
+      <child link="base_link"/>
+    </joint> -->
+
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.025566 -0.0012293 0.024367"
+        rpy="0 0 0" />
+      <mass
+        value="0.15009" />
+      <inertia
+        ixx="7.0347E-05"
+        ixy="-2.608E-07"
+        ixz="1.5444E-05"
+        iyy="7.3091E-05"
+        iyz="-1.2084E-06"
+        izz="0.00010959" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="left_wheel_link">
+    <inertial>
+      <origin
+        xyz="-8.8919E-05 -0.0038269 -8.1628E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.014111" />
+      <inertia
+        ixx="2.4055E-06"
+        ixy="5.333E-08"
+        ixz="1.1993E-09"
+        iyy="4.2136E-06"
+        iyz="3.7603E-08"
+        izz="2.4044E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/left_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.50196 0.50196 0.50196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/left_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.0015549 0.053866 0.0011204"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_wheel_link" />
+    <axis
+      xyz="0.028847 0.99937 0.020786" />
+  </joint>
+  <link
+    name="right_wheel_link">
+    <inertial>
+      <origin
+        xyz="8.944E-05 0.0038269 7.9359E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.014111" />
+      <inertia
+        ixx="2.4056E-06"
+        ixy="5.3313E-08"
+        ixz="1.0756E-09"
+        iyy="4.2136E-06"
+        iyz="3.7601E-08"
+        izz="2.4044E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/right_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.50196 0.50196 0.50196 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/right_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="-0.0015549 -0.053866 -0.0011204"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_wheel_link" />
+    <axis
+      xyz="0.028847 0.99937 0.020786" />
+  </joint>
+  <link
+    name="caster_wheel_link">
+    <inertial>
+      <origin
+        xyz="-0.0021044 -0.0014298 -0.014923"
+        rpy="0 0 0" />
+      <mass
+        value="0.014141" />
+      <inertia
+        ixx="2.1919E-06"
+        ixy="3.8453E-07"
+        ixz="8.1679E-08"
+        iyy="2.2221E-06"
+        iyz="6.9274E-09"
+        izz="3.4078E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/caster_wheel_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/caster_wheel_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="caster_wheel_joint"
+    type="continuous">
+    <origin
+      xyz="0.067196 -0.0022154 0.011383"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="caster_wheel_link" />
+    <axis
+      xyz="-0.0264 0.021537 -0.99942" />
+  </joint>
+  <link
+    name="casterball_link">
+    <inertial>
+      <origin
+        xyz="7.0778E-06 -6.9887E-06 -3.6348E-07"
+        rpy="0 0 0" />
+      <mass
+        value="0.0091741" />
+      <inertia
+        ixx="6.5492E-07"
+        ixy="-5.0039E-09"
+        ixz="-2.5621E-10"
+        iyy="6.5468E-07"
+        iyz="2.1952E-10"
+        izz="6.4987E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/casterball_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.55686 0.55686 0.55686 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/casterball_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="casterball_joint"
+    type="revolute">
+    <origin
+      xyz="0.0063432 0.007688 -0.022315"
+      rpy="0 0 0" />
+    <parent
+      link="caster_wheel_link" />
+    <child
+      link="casterball_link" />
+    <axis
+      xyz="0.71538 -0.69791 -0.033936" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="lidar_Link">
+    <inertial>
+      <origin
+        xyz="0.0047077 0.0002084 -0.0069054"
+        rpy="0 0 0" />
+      <mass
+        value="0.073208" />
+      <inertia
+        ixx="2.1832E-05"
+        ixy="4.6598E-07"
+        ixz="8.4247E-06"
+        iyy="4.1492E-05"
+        iyz="-3.6568E-07"
+        izz="4.7274E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/lidar_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://tianbot_mini_description/meshes/lidar_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lidar_joint"
+    type="fixed">
+    <origin
+      xyz="0.028391 -0.0024308 0.066849"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="lidar_Link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+</robot>

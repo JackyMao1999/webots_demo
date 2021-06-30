@@ -1,0 +1,57 @@
+<!-- Copyright:Webots Demo -->
+<!-- Author: 锡城筱凯 -->
+<!-- Date:2021-06-30  -->
+<!-- Blog：https://blog.csdn.net/xiaokai1999 -->
+<!-- Description: 启动Webots以及Cartographer建图，采用teb导航算法 -->
+<launch>
+  <!-- 打开webots -->
+  <include file="$(find webots_demo)/launch/webots.launch" />
+
+  <!-- bringup -->
+  <node name="robot_broadcaster" pkg="webots_demo" type="robot_broadcaster_cartographer" />
+  <!-- 导航机器人控制程序 -->
+  <node name="demo_2dnav_move" pkg="webots_demo" type="demo_2dnav_move"/>
+  <node name="velocity_keyboard_v2" pkg="webots_demo" type="velocity_keyboard_v2"/>
+  
+  <!-- 载入机器人模型(笔者的机器人模型没弄好,所以先注释掉) -->
+  <!-- <arg name="model" />
+  <arg name="gui" default="false" />
+  <param name="robot_description" textfile="$(find volcano_robotsim)/rviz/model.urdf" />
+  <param name="use_gui" value="$(arg gui)" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />  -->
+
+  <!-- 打开rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find webots_demo)/rviz/robot_cartographer.rviz" /> 
+
+  <!-- Cartographer  -->
+  <param name="/use_sim_time" value="true" />
+  <node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory $(find webots_demo)/config/cartographer_config
+          -configuration_basename revo_lds.lua"
+      output="screen" >
+    <remap from="scan" to="robot/Sick_LMS_291/laser_scan/layer0" />
+    <remap from="odom" to="robot/odom" />
+  </node>
+  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+      type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
+
+  <!-- move_base 导航> -->
+  <node pkg="move_base" type="move_base" respawn="true" name="move_base" output="screen">
+     <rosparam file="$(find webots_demo)/config/teb/diff_drive/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find webots_demo)/config/teb/diff_drive/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find webots_demo)/config/teb/diff_drive/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find webots_demo)/config/teb/diff_drive/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find webots_demo)/config/teb/diff_drive/teb_local_planner_params.yaml" command="load" />
+    
+    <rosparam file="$(find webots_demo)/config/teb/diff_drive/costmap_converter_params.yaml" command="load" /> 
+
+    <remap from="cmd_vel" to="cmd_vel"/>
+    <remap from="odom" to="odom"/>
+    <remap from="scan" to="robot/Sick_LMS_291/laser_scan/layer0"/>
+
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS"/>
+  </node>
+</launch>
