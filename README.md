@@ -1,4 +1,7 @@
 # 中文说明
+必须注意：
+**Webots版本为R2021a Ubuntu版本为20.04**
+
 中文教程地址[ROS联合webots实战案例目录](https://blog.csdn.net/xiaokai1999/article/details/112601720)
 ## 各文件功能介绍
 
