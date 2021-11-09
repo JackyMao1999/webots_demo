@@ -1,7 +1,7 @@
 /************************************************* 
 Copyright:Webots_ros API
 Author: 锡城筱凯
-Date:2021-11-07 
+Date:2021-11-09 
 Blog：https://blog.csdn.net/xiaokai1999
 Description:Webots_ros官方库的整合库，简便易用
 **************************************************/  
@@ -38,10 +38,10 @@ public:
     int SetMotorsVelocity(ros::NodeHandle *n, const char *motorNames, float value);
     // 使能Webots服务，成功返回0，失败返回1
     int EnableService(ros::NodeHandle *n, std::string Service_name);
+    // 检查时钟通讯，成功返回0，失败返回1
     int ChecktimeStep();
-    int Servicesub();
     // 退出函数
-    void Quit();
+    void Quit(ros::NodeHandle *n);
 };
 Webots::Webots(int TIME_STEP,std::string ROBOT_NAME){
     this->TIME_STEP = TIME_STEP;
@@ -122,8 +122,15 @@ int Webots::EnableService(ros::NodeHandle *n, std::string Service_name){
         return 1;
     }
 }
-void Webots::Quit(){
+int Webots::ChecktimeStep(){
+    if (!timeStepClient.call(timeStepSrv) || !timeStepSrv.response.success){  
+        ROS_ERROR("Failed to call service time_step for next step.");     
+        return 1;
+    }
+}
+void Webots::Quit(ros::NodeHandle *n){
     ROS_INFO("Stopped the node.");
+    delete n;
     timeStepSrv.request.value = 0; 
     timeStepClient.call(timeStepSrv); 
     ros::shutdown();
