@@ -1,7 +1,7 @@
 /************************************************* 
 Copyright:Webots_ros API
 Author: 锡城筱凯
-Date:2021-11-09 
+Date:2021-11-07 
 Blog：https://blog.csdn.net/xiaokai1999
 Description:Webots_ros官方库的整合库，简便易用
 **************************************************/  
@@ -14,6 +14,8 @@ Description:Webots_ros官方库的整合库，简便易用
 #include <webots_ros/set_int.h>
 #include <webots_ros/set_float.h>
 #include <webots_ros/Int32Stamped.h>
+
+
 class Webots
 {
 private:
@@ -23,9 +25,9 @@ private:
     std::string ROBOT_NAME;
 public:
     // 时钟通讯service客户端
-    static ros::ServiceClient timeStepClient;  
+    ros::ServiceClient timeStepClient;  
     // 时钟服务数据        
-    static webots_ros::set_int timeStepSrv;            
+    webots_ros::set_int timeStepSrv;            
     // Webots类构造函数，设置必须变量
     Webots(int TIME_STEP,std::string ROBOT_NAME);
     // 初始化Webots和Ros之间的桥梁，成功返回0，失败返回1
@@ -38,7 +40,7 @@ public:
     int SetMotorsVelocity(ros::NodeHandle *n, const char *motorNames, float value);
     // 使能Webots服务，成功返回0，失败返回1
     int EnableService(ros::NodeHandle *n, std::string Service_name);
-    // 检查时钟通讯，成功返回0，失败返回1
+    // 检测时钟通讯，成功返回0，失败返回1
     int ChecktimeStep();
     // 退出函数
     void Quit(ros::NodeHandle *n);
@@ -51,7 +53,6 @@ int Webots::Init(ros::NodeHandle *n, ros::Subscriber nameSub, const int &control
     std::string controllerName;
     // 订阅webots中所有可用的model_name
     while (controllerCount == 0 || controllerCount < nameSub.getNumPublishers()) {
-        ROS_INFO("controllerCount=%d",controllerCount);
         ros::spinOnce();
     }
     
@@ -126,8 +127,9 @@ int Webots::ChecktimeStep(){
     if (!timeStepClient.call(timeStepSrv) || !timeStepSrv.response.success){  
         ROS_ERROR("Failed to call service time_step for next step.");     
         return 1;
-    }
+    }else return 0;
 }
+
 void Webots::Quit(ros::NodeHandle *n){
     ROS_INFO("Stopped the node.");
     delete n;
