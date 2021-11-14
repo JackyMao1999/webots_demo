@@ -65,7 +65,6 @@ void controllerNameCallback(const std_msgs::String::ConstPtr &name) {
     ROS_INFO("Controller #%d: %s.", controllerCount, controllerList.back().c_str());
 }
 
-
 /*******************************************************
 * Function name ：键盘返回函数
 * Description   ：当键盘动作，就会进入此函数内
@@ -110,11 +109,7 @@ void keyboardDataCallback(const webots_ros::Int32Stamped::ConstPtr &value)
 * Return        ：无
 **********************************************************/
 void quit(int sig) {
-    ROS_INFO("User stopped the '/robot' node.");
-    timeStepSrv.request.value = 0; 
-    timeStepClient.call(timeStepSrv); 
-    ros::shutdown();
-    exit(0);
+    w.Quit(n);
 }
 int main(int argc, char **argv) {
     std::string controllerName;
@@ -125,7 +120,6 @@ int main(int argc, char **argv) {
     signal(SIGINT, quit);
 
     // 订阅webots中所有可用的model_name
-    
     ros::Subscriber nameSub = n->subscribe("model_name", 10, controllerNameCallback);
     w.Init(n, nameSub, controllerCount, controllerList);
     w.InitMotors(n, motorNames, NMOTORS);
@@ -145,15 +139,9 @@ int main(int argc, char **argv) {
         while (ros::ok()) {   
             ros::spinOnce();
             updateSpeed();
-            if (!Webots::timeStepClient.call(Webots::timeStepSrv) || !Webots::timeStepSrv.response.success){  
-                ROS_ERROR("Failed to call service time_step for next step.");     
-                break;   
-            }   
+            if (w.ChecktimeStep())break;    
             ros::spinOnce();
         } 
     }
-    
-    w.Quit();
     return 0;
-
 }
