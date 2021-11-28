@@ -3,39 +3,27 @@ Copyright:Webots Demo
 Author: 锡城筱凯
 Date:2021-06-30 
 Blog：https://blog.csdn.net/xiaokai1999
+Change: 2021-11-20
 Description:Webots Demo 机器人导航底层控制代码
 **************************************************/  
 #include <signal.h>
-#include <std_msgs/String.h>
-#include "ros/ros.h"
 #include <geometry_msgs/Twist.h> 
-#include <webots_ros/set_float.h>
-#include <webots_ros/set_int.h>
-#include <webots_ros/Int32Stamped.h>
-using namespace std;
-
-#define TIME_STEP 32                        // 时钟
-#define NMOTORS 2                           // 电机数量
-#define MAX_SPEED 2.0                       // 电机最大速度
-#define ROBOT_NAME "robot/"                 // ROBOT名称
+#include <webots_ros.h> 
 
 ros::NodeHandle *n;
+
+const int TIME_STEP = 32;                   // 时钟
+const int NMOTORS = 2;                      // 电机数量
+const float MAX_SPEED = 2.0;                // 电机最大速度
+const std::string ROBOT_NAME = "robot/";    // ROBOT名称 
+double speeds[NMOTORS]={0.0,0.0};           // 电机速度值 0.0～10.0
+
+static const char *motorNames[NMOTORS] ={"left_motor", "right_motor"};// 控制位置电机名称
 
 static int controllerCount;
 static std::vector<std::string> controllerList; 
 
-ros::ServiceClient timeStepClient;          // 时钟通讯service客户端
-webots_ros::set_int timeStepSrv;            // 时钟服务数据
-
-ros::ServiceClient set_velocity_client;     // 电机速度通讯service客户端
-webots_ros::set_float set_velocity_srv;     // 电机速度服务数据
-
-ros::ServiceClient set_position_client;     // 电机位置通讯service客户端
-webots_ros::set_float set_position_srv;     // 电机位置服务数据
-
-double speeds[NMOTORS]={0.0,0.0};           // 四电机速度值 0～10
-static const char *motorNames[NMOTORS] ={"left_motor", "right_motor"};// 控制位置电机名称
-
+Webots w = Webots(TIME_STEP,ROBOT_NAME);
 /*******************************************************
 * Function name ：updateSpeed
 * Description   ：将速度请求以set_float的形式发送给set_velocity_srv
@@ -45,9 +33,7 @@ static const char *motorNames[NMOTORS] ={"left_motor", "right_motor"};// 控制�
 void updateSpeed() {   
     for (int i = 0; i < NMOTORS; ++i) {
         // 更新速度
-        set_velocity_client = n->serviceClient<webots_ros::set_float>(string(ROBOT_NAME) + string(motorNames[i]) + string("/set_velocity"));   
-        set_velocity_srv.request.value = -speeds[i];
-        set_velocity_client.call(set_velocity_srv);
+        w.SetMotorsVelocity(n, motorNames[i], -speeds[i]);
     }
 }
 
@@ -73,11 +59,7 @@ void controllerNameCallback(const std_msgs::String::ConstPtr &name) {
 * Return        ：无
 **********************************************************/
 void quit(int sig) {
-    ROS_INFO("User stopped the '/robot' node.");
-    timeStepSrv.request.value = 0; 
-    timeStepClient.call(timeStepSrv); 
-    ros::shutdown();
-    exit(0);
+    w.Quit(n);
 }
 
 /*******************************************************
@@ -113,63 +95,16 @@ int main(int argc, char **argv) {
     signal(SIGINT, quit);
     // 订阅webots中所有可用的model_name
     ros::Subscriber nameSub = n->subscribe("model_name", 100, controllerNameCallback);
-    while (controllerCount == 0 || controllerCount < nameSub.getNumPublishers()) {
-        ros::spinOnce();
-    }
-    ros::spinOnce();
-    // 服务订阅time_step和webots保持同步
-    timeStepClient = n->serviceClient<webots_ros::set_int>("robot/robot/time_step");
-    timeStepSrv.request.value = TIME_STEP;
-
-    // 如果在webots中有多个控制器的话，需要让用户选择一个控制器
-    if (controllerCount == 1)
-        controllerName = controllerList[0];
-    else {
-        int wantedController = 0;
-        std::cout << "Choose the # of the controller you want to use:\n";
-        std::cin >> wantedController;
-        if (1 <= wantedController && wantedController <= controllerCount)
-        controllerName = controllerList[wantedController - 1];
-        else {
-        ROS_ERROR("Invalid number for controller choice.");
-        return 1;
-        }
-    }
-    ROS_INFO("Using controller: '%s'", controllerName.c_str());
-    // 退出主题，因为已经不重要了
-    nameSub.shutdown();
-
-    // 初始化电机  
-    for (int i = 0; i < NMOTORS; ++i) {
-        // position速度控制时设置为缺省值INFINITY   
-        // 初始化四个控制位置的电机
-        set_position_client = n->serviceClient<webots_ros::set_float>(string(ROBOT_NAME) + string(motorNames[i]) + string("/set_position"));   
-        set_position_srv.request.value = INFINITY;
-        if (set_position_client.call(set_position_srv) && set_position_srv.response.success)     
-            ROS_INFO("Position set to INFINITY for motor %s.", motorNames[i]);   
-        else     
-            ROS_ERROR("Failed to call service set_position on motor %s.", motorNames[i]);   
-        set_velocity_client = n->serviceClient<webots_ros::set_float>(string(ROBOT_NAME) + string(motorNames[i]) + string("/set_velocity"));   
-        set_velocity_srv.request.value = 0.0;   
-        if (set_velocity_client.call(set_velocity_srv) && set_velocity_srv.response.success == 1)     
-            ROS_INFO("Velocity set to 0.0 for motor %s.", motorNames[i]);   
-        else     
-            ROS_ERROR("Failed to call service set_velocity on motor %s.", motorNames[i]);
-    }   
+    w.Init(n, nameSub, controllerCount, controllerList);
+    w.InitMotors(n, motorNames, NMOTORS);
 
     ros::Subscriber cmdvelSub;
     cmdvelSub = n->subscribe("/cmd_vel",1,cmdvelDataCallback);// 监听/cmd_vel，获取导航算法发过来的数据
     while (cmdvelSub.getNumPublishers() == 0) {}
     while (ros::ok()) {   
-        ros::spinOnce();
-        if (!timeStepClient.call(timeStepSrv) || !timeStepSrv.response.success){  
-            ROS_ERROR("Failed to call service time_step for next step.");     
-            break;   
-        }   
+        if (w.ChecktimeStep())break;
         ros::spinOnce();
     } 
-    timeStepSrv.request.value = 0;
-    timeStepClient.call(timeStepSrv);
-    ros::shutdown(); 
+    w.Quit(n);
     return 0;
 }

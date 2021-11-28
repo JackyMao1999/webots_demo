@@ -154,6 +154,10 @@ add_executable(velocity_keyboard_v2 src/velocity_keyboard_v2.cpp)
 add_dependencies(velocity_keyboard_v2 webots_ros_generate_messages_cpp)
 target_link_libraries(velocity_keyboard_v2	${catkin_LIBRARIES})
 
+add_executable(velocity_keyboard_v3 src/velocity_keyboard_v3.cpp)
+add_dependencies(velocity_keyboard_v3 webots_ros_generate_messages_cpp)
+target_link_libraries(velocity_keyboard_v3	${catkin_LIBRARIES})
+
 add_executable(velocity_joy src/velocity_joy.cpp)
 add_dependencies(velocity_joy webots_ros_generate_messages_cpp)
 target_link_libraries(velocity_joy	${catkin_LIBRARIES})

@@ -115,14 +115,19 @@ int Webots::EnableService(ros::NodeHandle *n, std::string Service_name){
     EnableClient = n->serviceClient<webots_ros::set_int>(ROBOT_NAME + "/" + Service_name + "/enable");
     Enablesrv.request.value = TIME_STEP;
     if (EnableClient.call(Enablesrv) && Enablesrv.response.success){
-        ROS_INFO("Enable %s successful", Service_name);
+        ROS_INFO("Enable %s successful", Service_name.c_str());
         return 0;
     } 
     else{
-        ROS_ERROR("Could not enable %s, success = %d.", Service_name, Enablesrv.response.success);
+        ROS_ERROR("Could not enable %s, success = %d.", Service_name.c_str(), Enablesrv.response.success);
         return 1;
     }
 }
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 3c399afba19e28f7a261981f826b10f4375766f0
 int Webots::ChecktimeStep(){
     if (!timeStepClient.call(timeStepSrv) || !timeStepSrv.response.success){  
         ROS_ERROR("Failed to call service time_step for next step.");     
