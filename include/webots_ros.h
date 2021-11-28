@@ -124,10 +124,13 @@ int Webots::EnableService(ros::NodeHandle *n, std::string Service_name){
     }
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
 >>>>>>> 3c399afba19e28f7a261981f826b10f4375766f0
+=======
+>>>>>>> ee7b80661e45fd443297386f751b1ce5b57dbf67
 int Webots::ChecktimeStep(){
     if (!timeStepClient.call(timeStepSrv) || !timeStepSrv.response.success){  
         ROS_ERROR("Failed to call service time_step for next step.");     
