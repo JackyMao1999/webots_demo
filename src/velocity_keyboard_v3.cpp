@@ -10,6 +10,7 @@ Description:Webots Demo 通过webots控制机器人移动
 #include <locale.h> 
 #include <webots_ros.h>
 #include <nav_msgs/Odometry.h>
+#include <geometry_msgs/Twist.h>
 
 ros::NodeHandle *n;
 
@@ -101,7 +102,20 @@ void keyboardDataCallback(const webots_ros::Int32Stamped::ConstPtr &value)
             break;
     }
 }
-
+/*******************************************************
+* Function name ：cmdvel返回函数
+* Description   ：获取导航返回的角速度和线速度
+* Parameter     ：
+        @value   返回的值
+* Return        ：无
+**********************************************************/
+void cmdvelDataCallback(const geometry_msgs::Twist::ConstPtr &value)
+{
+    
+    angular_temp = value->angular.z ;//获取/cmd_vel的角速度,rad/s
+    linear_temp = value->linear.x ;//获取/cmd_vel的线速度.m/s  
+    
+}
 /*******************************************************
 * Function name ：quit
 * Description   ：退出函数
@@ -126,6 +140,9 @@ int main(int argc, char **argv) {
     ros::Subscriber nameSub = n->subscribe("model_name", 10, controllerNameCallback);
     w.Init(n, nameSub, controllerCount, controllerList);
     w.InitMotors(n, motorNames, NMOTORS);
+    
+    ros::Subscriber cmdvelSub;
+    cmdvelSub = n->subscribe("/cmd_vel",1,cmdvelDataCallback);
     pub_speed = n->advertise<nav_msgs::Odometry>("/vel",1);
     if(!w.EnableService(n, "keyboard")){
         ros::Subscriber keyboardSub;
