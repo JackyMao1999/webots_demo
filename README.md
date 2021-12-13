@@ -23,6 +23,7 @@
 |robot_set_goals.cpp|机器人通过程序设定目标点|
 |velocity_joy.cpp|通过手柄控制机器人移动|
 |velocity_keyboard_v2.cpp|通过webots控制机器人移动|
+|velocity_keyboard_v3.cpp|通过webots控制机器人移动，将demo_2dnav_move.cpp合成进来从而实现导航的底层控制代码|
 ## 操作方法
 1. 安装必备功能包
 - 安装gmapping功能包
@@ -54,6 +55,7 @@ $ sudo apt install ros-noetic-teb-local-planner
 ```
 
 2. 命令行进入`catkin_ws/src`
+- 注意：这边会优先下载`Noetic-Webots-R2021a`版本
 ``` shell
 $ cd catkin_ws/src
 $ git clone https://github.com/JackyMao1999/webots_demo.git
